@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XO3</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button class="mode-toggle" id="modeToggle" title="Toggle dark/light mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="modal-overlay" id="gameOverModal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">Game Over!</h2>
+            
+            <div class="modal-icon" id="modalIcon">
+            </div>
+            
+            <div class="modal-message" id="modalMessage">
+            </div>
+            
+            <div class="modal-stats">
+                <div class="stat-row">
+                    <span>Total Moves:</span>
+                    <span id="modalTotalMoves">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>X Moves:</span>
+                    <span id="modalXMoves">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>O Moves:</span>
+                    <span id="modalOMoves">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Game Duration:</span>
+                    <span id="modalGameTime">0:00</span>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn play-again" id="modalPlayAgain">
+                    <i class="fas fa-play-circle"></i> Play Again
+                </button>
+                <button class="modal-btn new-game" id="modalNewGame">
+                    <i class="fas fa-home"></i> New Game
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="clickSound" src="Sonic_Soundfx_household_gaming_video_game_cartridge_console_extract_3.mp3" preload="auto"></audio>
+    <audio id="winSound" src="zapsplat_multimedia_game_tone_bright_sparkle_award_star_002_43981.mp3" preload="auto"></audio>
+    <audio id="removeSound" src="zapsplat_cartoon_walk_sneak_tip_toes_careful_quitetly_faster_short_orchestral_pizzacato_wind_instruments_113949.mp3" preload="auto"></audio>
+
+    <div class="container">
+        <header>
+            <h1><span class="x-color">X</span>O<span class="o-color">3</span></h1>
+            <p class="game-description baby-green">Tic Tac Toe </p>
+        </header>
+
+        <main>
+            <section id="startScreen" class="game-section active">
+                <div class="start-screen">
+                    <h2>Welcome to XO3</h2>
+                    
+                    <div class="rules-list">
+                        <h3>How to Play:</h3>
+                        <ul>
+                            <li>Players <span class="x-color">X</span> and <span class="o-color">O</span> take turns</li>
+                            <li><strong class="baby-green">Max 3 moves per player</strong> on board</li>
+                            <li>4th move removes 1st move</li>
+                            <li>5th move removes 2nd move</li>
+                            <li>Win with <span class="baby-green">3 in a row</span></li>
+                            <li><strong>Shared Timer:</strong> Game ends if total time runs out!</li>
+                        </ul>
+                        
+                        <div class="example-box">
+                            <div class="example-board">
+                                <div class="example-cell x-color">X</div>
+                                <div class="example-cell"></div>
+                                <div class="example-cell o-color">O</div>
+                                <div class="example-cell x-color">X</div>
+                                <div class="example-cell x-color">X</div>
+                                <div class="example-cell"></div>
+                                <div class="example-cell o-color">O</div>
+                                <div class="example-cell"></div>
+                                <div class="example-cell o-color">O</div>
+                            </div>
+                            <p class="example-text">Both players have 3 moves. Next X move removes oldest X.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="symbol-selector">
+                        <h3>Choose Your Symbol:</h3>
+                        <div class="symbol-options">
+                            <button class="symbol-btn active-symbol" data-symbol="X">
+                                <span class="x-color">X</span> (Goes First)
+                            </button>
+                            <button class="symbol-btn" data-symbol="O">
+                                <span class="o-color">O</span> (Goes Second)
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-options">
+                        <h3>Game Timer (Shared):</h3>
+                        <div class="timer-difficulty">
+                            <button class="timer-btn active-timer" data-time="300">
+                                <i class="fas fa-hourglass-start"></i> Easy (5 min)
+                            </button>
+                            <button class="timer-btn" data-time="180">
+                                <i class="fas fa-hourglass-half"></i> Medium (3 min)
+                            </button>
+                            <button class="timer-btn" data-time="60">
+                                <i class="fas fa-hourglass-end"></i> Hard (1 min)
+                            </button>
+                        </div>
+                        <p class="example-text" style="text-align: center; margin-top: 10px;">
+                            <i class="fas fa-info-circle baby-green"></i> Both players share the total game time.
+                        </p>
+                    </div>
+                    
+                    <div class="game-options">
+                        <h3>Game Mode:</h3>
+                        <div class="options-container">
+                            <button class="btn mode-btn active-mode" data-mode="pvp">
+                                <i class="fas fa-users"></i> Player vs Player
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="saved-game-info" id="savedGameInfo">
+                        <div class="saved-game-alert">
+                            <i class="fas fa-save"></i>
+                            <span>Saved game found!</span>
+                            <button class="btn-small" id="loadGameBtn">Load Game</button>
+                        </div>
+                    </div>
+                    
+                    <div class="start-buttons">
+                        <button class="btn start-btn" id="startBtn">
+                            <i class="fas fa-play"></i> Start New Game
+                        </button>
+                        
+                        <button class="btn btn-secondary" id="loadGameBtn2">
+                            <i class="fas fa-download"></i> Load Saved Game
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="gameScreen" class="game-section">
+                <div class="game-header">
+                    <div class="player-info">
+                        <div class="player-turn" id="playerTurn">
+                            <span class="player-icon x-color">X</span>
+                            <span>Player X's Turn</span>
+                        </div>
+                        <div class="current-symbol" id="currentSymbol">
+                            You are: <span class="x-color">X</span>
+                        </div>
+                    </div>
+                    
+                    <div class="header-buttons">
+                        <button class="btn btn-undo" id="undoBtn" title="Undo last move">
+                            <i class="fas fa-undo"></i> Undo
+                        </button>
+                        <button class="btn btn-save" id="saveGameBtn">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <button class="btn btn-secondary" id="restartBtn">
+                            <i class="fas fa-redo"></i> Restart
+                        </button>
+                        <button class="btn" id="homeBtn">
+                            <i class="fas fa-home"></i> Home
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="single-timer-container">
+                    <div class="timer-title">
+                        <i class="fas fa-clock"></i> Shared Game Timer
+                    </div>
+                    
+                    <div class="current-player-highlight">
+                        <div class="player-indicator x active" id="xPlayerIndicator">
+                            <i class="fas fa-times"></i> Player X
+                        </div>
+                        <div class="player-indicator o" id="oPlayerIndicator">
+                            <i class="far fa-circle"></i> Player O
+                        </div>
+                    </div>
+                    
+                    <div class="timer-bar-container" id="sharedTimerBar">
+                        <div class="timer-bar-progress" id="sharedTimerProgress"></div>
+                        <div class="timer-bar-text" id="sharedTimerText">5:00</div>
+                    </div>
+                    
+                    <div class="timer-info">
+                        <span>Total Time: <span id="totalTimeDisplay">5:00</span></span>
+                        <span>Time Remaining: <span id="timeRemainingDisplay">5:00</span></span>
+                    </div>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div>X Active Moves</div>
+                        <div class="stat-value stat-x" id="xMovesCount">0</div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div>O Active Moves</div>
+                        <div class="stat-value stat-o" id="oMovesCount">0</div>
+                    </div>
+                </div>
+                
+                <div class="game-board-container">
+                    <div class="game-board" id="gameBoard">
+                    </div>
+                    
+                    <div class="move-history">
+                        <h3>Last 5 Moves:</h3>
+                        <div class="history-list" id="moveHistory"></div>
+                    </div>
+                </div>
+                
+                <div class="game-controls">
+                    <button class="sound-btn" id="soundToggle">
+                        <i class="fas fa-volume-up"></i> Sound
+                    </button>
+                </div>
+            </section>
+
+            <section id="resultScreen" class="game-section">
+                <div class="result-screen">
+                    <div class="result-content">
+                        <h2 id="resultTitle">Game Over!</h2>
+                        <div class="result-icon" id="resultIcon"></div>
+                        <p class="result-message" id="resultMessage"></p>
+                        
+                        <div class="result-buttons">
+                            <button class="btn" id="playAgainBtn">
+                                <i class="fas fa-play-circle"></i> Play Again
+                            </button>
+                            <button class="btn btn-secondary" id="newGameBtn">
+                                <i class="fas fa-home"></i> New Game
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p class="baby-green">XO3 Game - Web Programming Project</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
